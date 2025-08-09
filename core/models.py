@@ -4,8 +4,6 @@ from enum import Enum
 class DataSourceType(Enum):
     MYSQL = "MySQL"
     POSTGRESQL = "PostgreSQL"
-    SQLITE = "SQLite"
-    ORACLE = "Oracle"
 
 @dataclass
 class DataSource:

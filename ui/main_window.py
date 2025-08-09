@@ -54,13 +54,13 @@ class MainWindow(QMainWindow):
         # 下部标签页区域
         self.tab_widget = QTabWidget()
         self.data_source_list = QListWidget()
-        self.data_source_list.itemClicked.connect(self.show_data_source_details)
         self.script_list = QListWidget()
+
+        self.data_source_list.itemClicked.connect(self.show_data_source_details)
         self.script_list.itemClicked.connect(self.show_script_details)
 
         self.data_source_list.setFrameShape(QFrame.Shape.NoFrame)
         self.script_list.setFrameShape(QFrame.Shape.NoFrame)
-
 
         self.tab_widget.addTab(self.data_source_list, "数据源")
         self.tab_widget.addTab(self.script_list, "脚本")
@@ -103,6 +103,7 @@ class MainWindow(QMainWindow):
         """显示第一个数据源(如果有)"""
         if self.data_source_list.count() > 0:
             first_item = self.data_source_list.item(0)
+            first_item.setSelected(True)
             self.show_data_source_details(first_item)
         else:
             self.right_stacked.setCurrentWidget(self.blank_page)
@@ -111,6 +112,7 @@ class MainWindow(QMainWindow):
         """显示第一个脚本(如果有)"""
         if self.script_list.count() > 0:
             first_item = self.script_list.item(0)
+            first_item.setSelected(True)
             self.show_script_details(first_item)
         else:
             self.right_stacked.setCurrentWidget(self.blank_page)

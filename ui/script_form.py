@@ -89,13 +89,14 @@ class ScriptForm(QWidget):
 
     def set_mode(self, mode, script=None):
         self.mode = mode
+        self.refresh_ds_combo()
         if mode == 'add':
             self.name_edit.clear()
             self.fields_edit.clear()
             self.sql_edit.clear()
             self.ds_combo.setCurrentIndex(0)
             self.name_edit.setEnabled(True)
-            self.export_btn.setEnabled(False)
+            self.export_btn.setVisible(False)
             self.delete_btn.setVisible(False)  # 添加模式隐藏删除按钮
             self.current_script_name = ""
         elif mode == 'edit' and script:
@@ -104,7 +105,7 @@ class ScriptForm(QWidget):
             self.sql_edit.setPlainText(script.sql)
             self.ds_combo.setCurrentText(script.data_source_name)
             self.name_edit.setEnabled(False)
-            self.export_btn.setEnabled(True)
+            self.export_btn.setVisible(True)
             self.delete_btn.setVisible(True)  # 编辑模式显示删除按钮
             self.current_script_name = script.name
 
