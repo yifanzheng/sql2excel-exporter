@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "file-exporter"
+version = "0.1.0"
+description = ""
+authors = ["zhengyf4 <zhengyf4@lenovo.com>"]
+readme = "README.md"
+
+[[tool.poetry.source]]
+name = "pypi-tuna"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+priority = "primary"
+
+[tool.poetry.dependencies]
+python = "<3.14,>=3.9"
+xlsxwriter = "^3.2.5"
+pymysql = "^1.1.1"
+pyside6 = "^6.9.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
