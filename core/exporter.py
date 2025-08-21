@@ -1,5 +1,3 @@
-import time
-
 import xlsxwriter
 from PySide6.QtCore import QObject, Signal, QRunnable, QThreadPool, QMetaObject, Qt
 from PySide6.QtCore import Q_ARG
@@ -151,3 +149,4 @@ class Exporter(QObject):
         for cell in rowline:
             sheet.write(row, col, cell)
             col += 1
+

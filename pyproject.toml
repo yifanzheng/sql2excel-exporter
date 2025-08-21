@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "file-exporter"
+name = "sql2excel-exporter"
 version = "0.1.0"
 description = ""
 authors = ["zhengyf4 <zhengyf4@lenovo.com>"]
@@ -15,6 +15,7 @@ python = "<3.14,>=3.9"
 xlsxwriter = "^3.2.5"
 pymysql = "^1.1.1"
 pyside6 = "^6.9.1"
+psycopg2 = "^2.9.10"
 
 
 [build-system]
