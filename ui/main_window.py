@@ -1,7 +1,8 @@
-from PySide6.QtWidgets import (QMainWindow, QSplitter, QWidget, QVBoxLayout, QHBoxLayout,
-                               QPushButton, QTabWidget, QListWidget, QStackedWidget, QApplication, QStyle, QFrame)
 from PySide6.QtCore import Qt
-from core.database import Database
+from PySide6.QtWidgets import (QMainWindow, QSplitter, QWidget, QVBoxLayout, QHBoxLayout,
+                               QPushButton, QTabWidget, QListWidget, QStackedWidget, QFrame)
+
+from core.local_storage import LocalStorage
 from ui.data_source_form import DataSourceForm
 from ui.script_form import ScriptForm
 from ui.styles import apply_style
@@ -22,7 +23,7 @@ class MainWindow(QMainWindow):
             }
         """)
 
-        self.db = Database()
+        self.db = LocalStorage()
         self.current_data_source = None
         self.current_script = None
 

@@ -4,13 +4,13 @@ import pymysql
 from pymysql.cursors import SSCursor
 from pymysql import Error
 
-from core.models import DataSource
+from core.models import DataBase
 
 
 class MysqlDataSource:
 
     @staticmethod
-    def get_connection(data_source: DataSource) -> Optional[pymysql.Connection]:
+    def get_connection(data_source: DataBase) -> Optional[pymysql.Connection]:
         """建立MySQL数据库连接(使用PyMySQL)"""
         try:
             connection = pymysql.connect(

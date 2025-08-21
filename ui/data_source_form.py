@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import (QWidget, QFormLayout, QLineEdit, QComboBox,
                                QPushButton, QHBoxLayout, QMessageBox)
 from PySide6.QtCore import Signal
-from core.models import DataSource, DataSourceType
+from core.models import DataBase, DataBaseType
 from datasource.mysql_datasource import MysqlDataSource
 
 
@@ -21,7 +21,7 @@ class DataSourceForm(QWidget):
 
         self.name_edit = QLineEdit()
         self.type_combo = QComboBox()
-        self.type_combo.addItems([t.value for t in DataSourceType])
+        self.type_combo.addItems([t.value for t in DataBaseType])
         self.host_edit = QLineEdit()
         self.port_edit = QLineEdit()
         self.username_edit = QLineEdit()
@@ -95,9 +95,9 @@ class DataSourceForm(QWidget):
 
         try:
             # 创建临时数据源对象
-            ds = DataSource(
+            ds = DataBase(
                 name="connection_test",
-                type=DataSourceType(self.type_combo.currentText()),
+                type=DataBaseType(self.type_combo.currentText()),
                 host=self.host_edit.text().strip(),
                 port=self.port_edit.text().strip(),
                 username=self.username_edit.text().strip(),
@@ -127,7 +127,7 @@ class DataSourceForm(QWidget):
         return True
 
     @staticmethod
-    def _test_connection(data_source: DataSource) -> bool:
+    def _test_connection(data_source: DataBase) -> bool:
         """测试数据库连接是否成功"""
         connection = None
         try:
@@ -148,9 +148,9 @@ class DataSourceForm(QWidget):
             return
 
         try:
-            ds = DataSource(
+            ds = DataBase(
                 name=name,
-                type=DataSourceType(self.type_combo.currentText()),
+                type=DataBaseType(self.type_combo.currentText()),
                 host=self.host_edit.text().strip(),
                 port=self.port_edit.text().strip(),
                 username=self.username_edit.text().strip(),

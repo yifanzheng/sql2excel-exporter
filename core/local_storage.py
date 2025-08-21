@@ -1,12 +1,12 @@
 import json
 from pathlib import Path
 from typing import Dict, List
-from core.models import DataSource, ExportScript, DataSourceType
+from core.models import DataBase, ExportScript, DataBaseType
 
-class Database:
+class LocalStorage:
     def __init__(self, file_path: str = "config.json"):
         self.file_path = Path(file_path)
-        self.data_sources: Dict[str, DataSource] = {}
+        self.data_sources: Dict[str, DataBase] = {}
         self.scripts: Dict[str, ExportScript] = {}
         self.load()
 
@@ -15,9 +15,9 @@ class Database:
             with open(self.file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 for ds in data.get('data_sources', []):
-                    self.data_sources[ds['name']] = DataSource(
+                    self.data_sources[ds['name']] = DataBase(
                         name=ds['name'],
-                        type=DataSourceType(ds['type']),
+                        type=DataBaseType(ds['type']),
                         host=ds['host'],
                         port=ds['port'],
                         username=ds.get('username', ''),

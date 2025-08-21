@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 from enum import Enum
 
-class DataSourceType(Enum):
+class DataBaseType(Enum):
     MYSQL = "MySQL"
     POSTGRESQL = "PostgreSQL"
 
 @dataclass
-class DataSource:
+class DataBase:
     name: str
-    type: DataSourceType
+    type: DataBaseType
     host: str
     port: str
     username: str = ""
