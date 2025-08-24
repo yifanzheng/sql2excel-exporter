@@ -1,9 +1,7 @@
-import xlsxwriter
 from PySide6.QtCore import QObject, Signal, QRunnable, QThreadPool, QMetaObject, Qt
 from PySide6.QtCore import Q_ARG
-from pymysql.cursors import SSCursor
 
-from datasource.mysql_datasource import MysqlDataSource
+from datasource import datasource_container
 
 
 class ExportTask(QRunnable):
@@ -13,11 +11,11 @@ class ExportTask(QRunnable):
         self.script_name = script_name
         self.output_path = output_path
         self.signals = ExportSignals()
-        self._is_cancelled = False  # 取消标志
+        self.is_cancelled = False  # 取消标志
 
     def cancel(self):
         """标记任务为已取消"""
-        self._is_cancelled = True
+        self.is_cancelled = True
 
     def run(self):
         try:
@@ -31,57 +29,12 @@ class ExportTask(QRunnable):
                 self.signals.failed.emit(f"Data source '{script.data_source_name}' not found")
                 return
 
-            # 连接数据库
-            with MysqlDataSource.get_connection(data_source) as connection:
-                if not connection:
-                    self.signals.failed.emit("Failed to connect to database")
-                    return
+            datasource_service = datasource_container.get_datasource(data_source)
 
-                with connection.cursor() as cursor:
-                    count_sql = f"SELECT COUNT(*) FROM ({script.sql}) as subquery"
-                    cursor.execute(count_sql)
-                    total_rows = cursor.fetchone()[0]
-                    self.signals.total_rows.emit(total_rows)
-
-                # 执行查询
-                with connection.cursor(SSCursor) as cursor:
-                    cursor.execute(script.sql)
-                    # excel
-                    output_file = self.output_path if self.output_path.endswith('.xlsx') else f"{self.output_path}.xlsx"
-                    fields = script.fields.split(',')
-                    if not fields:
-                        self.signals.failed.emit("No fields specified and no columns returned from query")
-                        return
-                    with xlsxwriter.Workbook(output_file, {'constant_memory': True}) as workbook:
-                        worksheet = workbook.add_worksheet("data")
-                        # 写 ExcelHeader
-                        header_format = workbook.add_format({
-                            'bold': True,  # 加粗
-                            'font_color': 'black',  # 字体颜色
-                            'bg_color': '#92D050',  # 背景颜色
-                        })
-                        worksheet.write_row('A1', fields, header_format)
-                        row = 1
-                        # 逐行读取（流式）
-                        while not self._is_cancelled:
-                            result = cursor.fetchone()
-                            if not result or self._is_cancelled:
-                                break
-                            self.signals.progress.emit(row)
-                            # 写入Excel
-                            Exporter._write_to_excel_rowline(worksheet, row, list(result))
-                            row += 1
-                            # time.sleep(0.01)  # 短暂释放控制权
-
-                    if self._is_cancelled:
-                        return
-
-                    if row > 1:
-                        self.signals.finished.emit(f"Exported {total_rows} rows to {self.output_path}")
-                    else:
-                        self.signals.finished.emit("No data to export")
+            output_file = self.output_path if self.output_path.endswith('.xlsx') else f"{self.output_path}.xlsx"
+            datasource_service.export(script, output_file, self)
         except Exception as e:
-            if not self._is_cancelled:
+            if not self.is_cancelled:
                 # 只有在未取消的情况下才发出失败信号
                 self.signals.failed.emit(f"Export failed: {str(e)}")
 
@@ -149,4 +102,3 @@ class Exporter(QObject):
         for cell in rowline:
             sheet.write(row, col, cell)
             col += 1
-

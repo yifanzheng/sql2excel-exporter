@@ -1,8 +1,9 @@
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import (QWidget, QFormLayout, QLineEdit, QComboBox,
                                QPushButton, QHBoxLayout, QMessageBox)
-from PySide6.QtCore import Signal
+
 from core.models import DataBase, DataBaseType
-from datasource.mysql_datasource import MysqlDataSource
+from datasource import datasource_container
 
 
 class DataSourceForm(QWidget):
@@ -128,18 +129,8 @@ class DataSourceForm(QWidget):
 
     @staticmethod
     def _test_connection(data_source: DataBase) -> bool:
-        """测试数据库连接是否成功"""
-        connection = None
-        try:
-            connection = MysqlDataSource.get_connection(data_source)
-            if connection and connection.open:
-                return True
-            return False
-        except Exception:
-            return False
-        finally:
-            if connection and connection.open:
-                connection.close()
+        data_source = datasource_container.get_datasource(data_source)
+        return data_source.is_valid_connection()
 
     def save_data_source(self):
         name = self.name_edit.text().strip()
